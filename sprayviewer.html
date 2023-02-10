@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <style>
+      .thumbnail {
+        height: 75px;
+        width: 75px;
+        margin: 10px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body ng-app="sprayViewer">
+    <div ng-controller="SprayController as sprayCtrl">
+      <div ng-repeat="spray in sprayCtrl.sprays">
+        <img ng-src="{{sprayCtrl.getSprayImagePath(spray.steamid, spray.sprayid)}}" class="thumbnail">
+      </div>
+    </div>
+    <script>
+      angular.module('sprayViewer', [])
+        .controller('SprayController', ['$http', function($http) {
+          var self = this;
+          self.sprays = [];
+
+          self.getSprays = function() {
+            $http.get('sr_sprays_api.json').then(function(response) {
+              self.sprays = response.data.sprays;
+            });
+          };
+
+          self.getSprayImagePath = function(steamid, sprayid) {
+            return 'sr_sprays_jpg/' + steamid + '_' + sprayid + '.jpg';
+          };
+
+          self.getSprays();
+        }]);
+    </script>
+  </body>
+</html>
